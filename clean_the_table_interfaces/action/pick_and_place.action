@@ -1,0 +1,11 @@
+# Goal
+string object_id
+string target_table
+---
+# Result
+bool success
+string message
+---
+# Feedback
+string state
+

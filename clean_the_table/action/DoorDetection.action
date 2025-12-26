@@ -1,0 +1,4 @@
+---
+bool door_open  # Result: True if the door is open, False otherwise
+---
+string feedback  # Feedback message (e.g., "Scanning... Distance: 0.45m")

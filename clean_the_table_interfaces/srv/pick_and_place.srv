@@ -1,0 +1,4 @@
+# Request (empty)
+---
+bool door_open
+string message

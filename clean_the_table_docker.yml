@@ -1,0 +1,41 @@
+services:
+
+  tiago_base:
+      extends:
+        file: .compose_templates.yml
+        service: .tiago_sim
+      command: >
+        bash -c "
+        ros2 launch rwu_tiago_bringup sim_robocup_2023.launch.py x:=-1.451 y:=-5.25 yaw:=1.57 is_public_sim:=True navigation:=True slam:=False map_path:=/maps/fuinalmapFixed.yaml"
+
+  tiago_workspace_conainer:
+      image: fbe-dockerreg.rwu.de/prj-iki-ros2/robots/tiago/tiago_base:latest
+      extends:
+        file: .compose_templates.yml
+        service: .tiago_workspace
+      volumes:
+        - ~/.Xauthority:/root/.Xauthority:ro
+      environment:
+        - DISPLAY=:1
+      command: >
+        bash -c "
+        
+        sleep 25 &&
+        ros2 run clean_the_table clean_the_table;
+        tail -f /dev/null
+        "
+  apriltag_detection:
+      container_name: my_ros2_apriltag_detection
+      extends:
+        file: /home/gokul/iki_workspace/ros2_ws/src/gg-246842/submodules/ros-2-apriltags/docker/docker-compose.yml
+        service: apriltag_detection
+      command: 
+      - bash 
+      - -c 
+      - |
+          ros2 run apriltag_ros apriltag_node --ros-args -r image_rect:=/head_front_camera/rgb/image_raw -r camera_info:=/head_front_camera/rgb/camera_info  --params-file `ros2 pkg prefix apriltag_ros`/share/apriltag_ros/cfg/tags_36h11.yaml
+      environment:
+        - DISPLAY=:1
+      volumes:
+        - ~/.Xauthority:/root/.Xauthority:ro
+
